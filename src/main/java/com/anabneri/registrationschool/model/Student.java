@@ -15,9 +15,9 @@ import java.util.UUID;
 @Builder
 public class Student {
 
-    private UUID studentId;
+    private int studentId;
     private String studentName;
-    private Date dateOfRegistration;
+    private String dateOfRegistration;
 
 
 }
