@@ -1,4 +1,4 @@
-package com.anabneri.registrationschool.Registration.School.Metadata.Test;
+package com.anabneri.registrationschool;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
