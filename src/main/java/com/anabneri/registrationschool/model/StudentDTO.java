@@ -13,7 +13,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @Data
 @Builder
-public class Student {
+public class StudentDTO {
 
     private int studentId;
     private String studentName;

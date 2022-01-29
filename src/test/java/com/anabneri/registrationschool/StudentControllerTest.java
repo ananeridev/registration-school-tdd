@@ -1,14 +1,18 @@
 package com.anabneri.registrationschool;
 
+import com.anabneri.registrationschool.model.StudentDTO;
+import com.anabneri.registrationschool.model.entity.Student;
+import com.anabneri.registrationschool.service.StudentService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.runner.RunWith;
+import org.mockito.BDDMockito;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
@@ -29,11 +33,20 @@ public class StudentControllerTest {
     @Autowired
     MockMvc mockMvc;
 
+    @MockBean
+    StudentService studentService;
+
     @Test
     @DisplayName("Should create a student registration with success.")
     public void createStudentTest() throws Exception {
 
-        String json  = new ObjectMapper().writeValueAsString(null);
+        StudentDTO studentDTOBuilder = StudentDTO.builder().studentName("Ana Neri").dateOfRegistration("10/10/2021").build();
+        Student savedStudent = Student.builder().studentId(123).studentName("Ana Neri").dateOfRegistration("10/10/2021").build();
+
+        BDDMockito.given(studentService.save(Mockito.any(Student.class))).willReturn(savedStudent);
+
+
+        String json  = new ObjectMapper().writeValueAsString(studentDTOBuilder);
 
         MockHttpServletRequestBuilder request  = MockMvcRequestBuilders
                 .post(STUDENT_API)
@@ -46,8 +59,8 @@ public class StudentControllerTest {
                 .perform(request)
                 .andExpect(MockMvcResultMatchers.status().isCreated())
                 .andExpect(MockMvcResultMatchers.jsonPath("studentId").isNotEmpty())
-                .andExpect(MockMvcResultMatchers.jsonPath("studentName").value("Ana Neri"))
-                .andExpect(MockMvcResultMatchers.jsonPath("dateOfRegistration").isNotEmpty());
+                .andExpect(MockMvcResultMatchers.jsonPath("studentName").value(studentDTOBuilder.getStudentName()))
+                .andExpect(MockMvcResultMatchers.jsonPath("dateOfRegistration").value(studentDTOBuilder.getDateOfRegistration()));
 
     }
 
