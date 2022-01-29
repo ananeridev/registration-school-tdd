@@ -1,0 +1,1 @@
+# registraion-school-metadata-test
