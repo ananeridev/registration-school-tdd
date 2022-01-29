@@ -41,7 +41,7 @@ public class StudentControllerTest {
     public void createStudentTest() throws Exception {
 
         StudentDTO studentDTOBuilder = StudentDTO.builder().studentName("Ana Neri").dateOfRegistration("10/10/2021").build();
-        Student savedStudent = Student.builder().studentId(123).studentName("Ana Neri").dateOfRegistration("10/10/2021").build();
+        Student savedStudent = Student.builder().studentId(101).studentName("Ana Neri").dateOfRegistration("10/10/2021").build();
 
         BDDMockito.given(studentService.save(Mockito.any(Student.class))).willReturn(savedStudent);
 
@@ -58,7 +58,7 @@ public class StudentControllerTest {
         mockMvc
                 .perform(request)
                 .andExpect(MockMvcResultMatchers.status().isCreated())
-                .andExpect(MockMvcResultMatchers.jsonPath("studentId").isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("studentId").value(101))
                 .andExpect(MockMvcResultMatchers.jsonPath("studentName").value(studentDTOBuilder.getStudentName()))
                 .andExpect(MockMvcResultMatchers.jsonPath("dateOfRegistration").value(studentDTOBuilder.getDateOfRegistration()));
 
