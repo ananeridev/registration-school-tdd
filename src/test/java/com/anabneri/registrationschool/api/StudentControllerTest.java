@@ -1,4 +1,4 @@
-package com.anabneri.registrationschool;
+package com.anabneri.registrationschool.api;
 
 import com.anabneri.registrationschool.model.StudentDTO;
 import com.anabneri.registrationschool.model.entity.Student;
