@@ -8,6 +8,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
 public class StudentServiceTest {
@@ -26,6 +28,10 @@ public class StudentServiceTest {
                 .build();
 
        Student savedRegistrationStudent = studentService.save(student);
+
+       assertThat(savedRegistrationStudent.getStudentId()).isEqualTo(101);
+       assertThat(savedRegistrationStudent.getStudentName()).isEqualTo("Ana Neri");
+       assertThat(savedRegistrationStudent.getDateOfRegistration()).isEqualTo("10/10/2021");
 
     }
 
