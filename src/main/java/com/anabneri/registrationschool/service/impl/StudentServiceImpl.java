@@ -6,6 +6,8 @@ import com.anabneri.registrationschool.repository.StudentRepository;
 import com.anabneri.registrationschool.service.StudentService;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class StudentServiceImpl  implements StudentService {
 
@@ -21,5 +23,10 @@ public class StudentServiceImpl  implements StudentService {
         }
 
         return repository.save(student);
+    }
+
+    @Override
+    public Optional<Student> getByStudentId(Integer studentId) {
+        return Optional.empty();
     }
 }

@@ -23,6 +23,8 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.util.Optional;
+
 import static org.hamcrest.Matchers.hasSize;
 
 
@@ -110,10 +112,38 @@ public class StudentControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("errors[0]").value("Registration already created!"));
     }
 
+    @Test
+    @DisplayName("Should get student informations")
+    public void getStudentTest() throws Exception {
+
+        Integer studentId = 11;
+
+        Student student = Student.builder()
+                .studentId(studentId)
+                .studentName(createNewStudent().getStudentName())
+                .dateOfRegistration(createNewStudent().getDateOfRegistration())
+                .registration(createNewStudent().getRegistration()).build();
+
+        BDDMockito.given(studentService.getByStudentId(studentId)).willReturn(Optional.of(student));
+
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .get(STUDENT_API.concat("/" + studentId))
+                .accept(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(requestBuilder)
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("studentId").value(studentId))
+                .andExpect(MockMvcResultMatchers.jsonPath("studentName").value(createNewStudent().getStudentName()))
+                .andExpect(MockMvcResultMatchers.jsonPath("dateOfRegistration").value(createNewStudent().getDateOfRegistration()))
+                .andExpect(MockMvcResultMatchers.jsonPath("registration").value(createNewStudent().getRegistration()));
+
+
+    }
 
     private StudentDTO createNewStudent() {
         return StudentDTO.builder().studentName("Ana Neri").dateOfRegistration("10/10/2021").registration("001").build();
     }
+
 
 
 }

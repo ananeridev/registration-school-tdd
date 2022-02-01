@@ -36,4 +36,16 @@ public class StudentRepositoryTest {
         assertThat(exists).isTrue();
     }
 
+
+    @Test
+    @DisplayName("Should return false when doesn't exists an student with a registration already created.")
+    public void returnFalseWhenRegistrationDoestExists() {
+
+        String registration = "123";
+
+        boolean exists = repository.existsByRegistration(registration);
+
+        assertThat(exists).isFalse();
+    }
+
 }
