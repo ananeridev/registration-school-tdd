@@ -1,16 +1,17 @@
 package com.anabneri.registrationschool.service;
 
 
+import com.anabneri.registrationschool.exception.BusinessException;
 import com.anabneri.registrationschool.model.entity.Student;
 import com.anabneri.registrationschool.repository.StudentRepository;
 import com.anabneri.registrationschool.service.impl.StudentServiceImpl;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -35,19 +36,9 @@ public class StudentServiceTest {
     @DisplayName("Should save an student")
     public void saveStudent() {
 
-        Student student = Student.builder()
-                .studentId(101)
-                .studentName("Ana Neri")
-                .dateOfRegistration("10/10/2021")
-                .registration("001")
-                .build();
+        Student student = createValidStudent();
 
-        Mockito.when(repository.save(student)).thenReturn(Student.builder()
-                .studentId(101)
-                .studentName("Ana Neri")
-                .dateOfRegistration("10/10/2021")
-                .registration("001")
-                .build());
+        Mockito.when(repository.save(student)).thenReturn(createValidStudent());
 
        Student savedRegistrationStudent = studentService.save(student);
 
@@ -58,5 +49,32 @@ public class StudentServiceTest {
 
 
     }
+
+    private Student createValidStudent() {
+        return Student.builder()
+                .studentId(101)
+                .studentName("Ana Neri")
+                .dateOfRegistration("10/10/2021")
+                .registration("001")
+                .build();
+    }
+
+
+    @Test
+    @DisplayName("Should throw business error when try to save a new student with a registration duplicated")
+        public void shouldNotSaveAStudentWithRegistrationDuplicated() {
+
+        Student student = createValidStudent();
+        Mockito.when(repository.existsByRegistration(Mockito.anyString())).thenReturn(true);
+
+       Throwable exception =   Assertions.catchThrowable( () -> studentService.save(student));
+       assertThat(exception)
+               .isInstanceOf(BusinessException.class)
+               .hasMessage("Registration already created!");
+
+       Mockito.verify(repository, Mockito.never()).save(student);
+
+    }
+
 
 }

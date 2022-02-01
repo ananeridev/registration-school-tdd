@@ -1,5 +1,6 @@
 package com.anabneri.registrationschool.service.impl;
 
+import com.anabneri.registrationschool.exception.BusinessException;
 import com.anabneri.registrationschool.model.entity.Student;
 import com.anabneri.registrationschool.repository.StudentRepository;
 import com.anabneri.registrationschool.service.StudentService;
@@ -15,6 +16,10 @@ public class StudentServiceImpl  implements StudentService {
     }
 
     public Student save(Student student) {
+        if (repository.existsByRegistration(student.getRegistration())) {
+            throw new BusinessException("Registration already created!");
+        }
+
         return repository.save(student);
     }
 }
