@@ -38,6 +38,7 @@ public class StudentServiceTest {
 
         Student student = createValidStudent();
 
+        Mockito.when(repository.existsByRegistration(Mockito.anyString())).thenReturn(false);
         Mockito.when(repository.save(student)).thenReturn(createValidStudent());
 
        Student savedRegistrationStudent = studentService.save(student);
