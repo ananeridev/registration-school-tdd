@@ -15,7 +15,7 @@ import java.util.UUID;
 @Builder
 public class StudentDTO {
 
-    private int studentId;
+    private Integer studentId;
     private String studentName;
     private String dateOfRegistration;
 

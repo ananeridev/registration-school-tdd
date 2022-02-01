@@ -2,9 +2,13 @@ package com.anabneri.registrationschool.service;
 
 
 import com.anabneri.registrationschool.model.entity.Student;
+import com.anabneri.registrationschool.repository.StudentRepository;
+import com.anabneri.registrationschool.service.impl.StudentServiceImpl;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mockito;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -14,7 +18,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ActiveProfiles("test")
 public class StudentServiceTest {
 
+    @MockBean
     StudentService studentService;
+
+    @MockBean
+    StudentRepository repository;
+
+    public void setUp() {
+        this.studentService = new StudentServiceImpl(repository);
+    }
 
 
     @Test
@@ -26,6 +38,12 @@ public class StudentServiceTest {
                 .studentName("Ana Neri")
                 .dateOfRegistration("10/10/2021")
                 .build();
+
+        Mockito.when(repository.save(student)).thenReturn(Student.builder()
+                .studentId(101)
+                .studentName("Ana Neri")
+                .dateOfRegistration("10/10/2021")
+                .build());
 
        Student savedRegistrationStudent = studentService.save(student);
 
