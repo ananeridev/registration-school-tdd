@@ -30,4 +30,6 @@ public class StudentController {
         return modelMapper.map(entity, StudentDTO.class);
     }
 
+//    public StudentDTO deleteStudent()
+
 }
