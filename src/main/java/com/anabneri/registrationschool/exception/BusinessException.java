@@ -1,4 +1,4 @@
-package com.anabneri.registrationschool.api.exception;
+package com.anabneri.registrationschool.exception;
 
 public class BusinessException extends RuntimeException {
     public BusinessException(String s) {

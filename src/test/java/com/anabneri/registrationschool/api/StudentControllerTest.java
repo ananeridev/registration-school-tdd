@@ -1,6 +1,6 @@
 package com.anabneri.registrationschool.api;
 
-import com.anabneri.registrationschool.api.exception.BusinessException;
+import com.anabneri.registrationschool.exception.BusinessException;
 import com.anabneri.registrationschool.model.StudentDTO;
 import com.anabneri.registrationschool.model.entity.Student;
 import com.anabneri.registrationschool.service.StudentService;
@@ -22,7 +22,6 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
-import org.testcontainers.shaded.org.hamcrest.Matchers;
 
 import static org.hamcrest.Matchers.hasSize;
 
@@ -85,7 +84,8 @@ public class StudentControllerTest {
 
 
         mockMvc.perform(request)
-                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andExpect(MockMvcResultMatchers.jsonPath("errors", hasSize(3)));
 
     }
 
@@ -107,7 +107,7 @@ public class StudentControllerTest {
         mockMvc.perform(request)
                 .andExpect(MockMvcResultMatchers.status().isBadRequest())
                 .andExpect(MockMvcResultMatchers.jsonPath("errors", hasSize(1)))
-                .andExpect(MockMvcResultMatchers.jsonPath("erros[0]").value("Registration already created!"));
+                .andExpect(MockMvcResultMatchers.jsonPath("errors[0]").value("Registration already created!"));
     }
 
 

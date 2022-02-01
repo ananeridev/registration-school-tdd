@@ -1,6 +1,7 @@
 package com.anabneri.registrationschool.controller;
 
 import com.anabneri.registrationschool.controller.exceptions.ApiErrors;
+import com.anabneri.registrationschool.exception.BusinessException;
 import com.anabneri.registrationschool.model.StudentDTO;
 import com.anabneri.registrationschool.model.entity.Student;
 import com.anabneri.registrationschool.service.StudentService;
@@ -42,5 +43,13 @@ public class StudentController {
         BindingResult bindingResult = e.getBindingResult();
 
         return new ApiErrors(bindingResult);
+    }
+
+
+    @ExceptionHandler(BusinessException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiErrors handleBusinessException(BusinessException e) {
+
+        return new ApiErrors(e);
     }
 }
