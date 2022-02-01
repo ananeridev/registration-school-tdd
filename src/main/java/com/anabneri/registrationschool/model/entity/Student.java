@@ -11,7 +11,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Student {
 
-    private int studentId;
+    private Integer studentId;
     private String studentName;
     private String dateOfRegistration;
+    private String registration;
 }

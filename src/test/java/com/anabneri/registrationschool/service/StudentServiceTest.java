@@ -39,12 +39,14 @@ public class StudentServiceTest {
                 .studentId(101)
                 .studentName("Ana Neri")
                 .dateOfRegistration("10/10/2021")
+                .registration("001")
                 .build();
 
         Mockito.when(repository.save(student)).thenReturn(Student.builder()
                 .studentId(101)
                 .studentName("Ana Neri")
                 .dateOfRegistration("10/10/2021")
+                .registration("001")
                 .build());
 
        Student savedRegistrationStudent = studentService.save(student);
@@ -52,6 +54,8 @@ public class StudentServiceTest {
        assertThat(savedRegistrationStudent.getStudentId()).isEqualTo(101);
        assertThat(savedRegistrationStudent.getStudentName()).isEqualTo("Ana Neri");
        assertThat(savedRegistrationStudent.getDateOfRegistration()).isEqualTo("10/10/2021");
+        assertThat(savedRegistrationStudent.getRegistration()).isEqualTo("001");
+
 
     }
 

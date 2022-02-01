@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotEmpty;
 import java.util.Date;
 import java.util.UUID;
 
@@ -16,8 +17,16 @@ import java.util.UUID;
 public class StudentDTO {
 
     private Integer studentId;
+
+    @NotEmpty
     private String studentName;
+
+    @NotEmpty
     private String dateOfRegistration;
+
+    @NotEmpty
+    private String registration;
+
 
 
 }

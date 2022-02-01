@@ -1,11 +1,16 @@
 package com.anabneri.registrationschool.controller;
 
+import com.anabneri.registrationschool.controller.exceptions.ApiErrors;
 import com.anabneri.registrationschool.model.StudentDTO;
 import com.anabneri.registrationschool.model.entity.Student;
 import com.anabneri.registrationschool.service.StudentService;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/api/student")
@@ -22,7 +27,7 @@ public class StudentController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public StudentDTO create( @RequestBody StudentDTO studentDTO ) {
+    public StudentDTO create( @RequestBody @Valid StudentDTO studentDTO ) {
 
         Student entity =  modelMapper.map(studentDTO, Student.class);
         entity = studentService.save(entity);
@@ -30,6 +35,12 @@ public class StudentController {
         return modelMapper.map(entity, StudentDTO.class);
     }
 
-//    public StudentDTO deleteStudent()
 
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiErrors handleValidateException(MethodArgumentNotValidException e) {
+        BindingResult bindingResult = e.getBindingResult();
+
+        return new ApiErrors(bindingResult);
+    }
 }
