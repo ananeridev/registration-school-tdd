@@ -38,11 +38,13 @@ public class StudentController {
 
 
     @GetMapping("{id}")
-    public StudentDTO get(@PathVariable Integer studentId) {
+    @ResponseStatus(HttpStatus.OK)
+    public StudentDTO get( @PathVariable Integer studentId ) {
+
        Student student =  studentService.getByStudentId(studentId).get();
+
         return modelMapper.map(student, StudentDTO.class);
     }
-
 
 
 
