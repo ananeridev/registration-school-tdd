@@ -29,4 +29,9 @@ public class StudentServiceImpl  implements StudentService {
     public Optional<Student> getByStudentId(Integer studentId) {
         return Optional.empty();
     }
+
+    @Override
+    public void delete(Student student) {
+
+    }
 }

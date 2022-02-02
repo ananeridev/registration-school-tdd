@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
 
@@ -41,9 +42,18 @@ public class StudentController {
     @ResponseStatus(HttpStatus.OK)
     public StudentDTO get( @PathVariable Integer studentId ) {
 
-       Student student =  studentService.getByStudentId(studentId).get();
+        return studentService
+                .getByStudentId(studentId)
+                .map(student ->  modelMapper.map(student, StudentDTO.class))
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    }
 
-        return modelMapper.map(student, StudentDTO.class);
+
+    @DeleteMapping("{studentId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteByStudentId(@PathVariable Integer studentId) {
+        Student student = studentService.getByStudentId(studentId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        studentService.delete(student);
     }
 
 

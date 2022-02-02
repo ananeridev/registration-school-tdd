@@ -26,6 +26,7 @@ import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Optional;
 
 import static org.hamcrest.Matchers.hasSize;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 
@@ -50,7 +51,7 @@ public class StudentControllerTest {
         StudentDTO studentDTOBuilder = createNewStudent();
         Student savedStudent = Student.builder().studentId(101).studentName("Ana Neri").dateOfRegistration("10/10/2021").registration("001").build();
 
-        BDDMockito.given(studentService.save(Mockito.any(Student.class))).willReturn(savedStudent);
+        BDDMockito.given(studentService.save(any(Student.class))).willReturn(savedStudent);
 
 
         String json  = new ObjectMapper().writeValueAsString(studentDTOBuilder);
@@ -99,7 +100,7 @@ public class StudentControllerTest {
         StudentDTO dto = createNewStudent();
         String json  = new ObjectMapper().writeValueAsString(dto);
 
-        BDDMockito.given(studentService.save(Mockito.any(Student.class))).willThrow(new BusinessException("Registration already created!"));
+        BDDMockito.given(studentService.save(any(Student.class))).willThrow(new BusinessException("Registration already created!"));
 
         MockHttpServletRequestBuilder request  = MockMvcRequestBuilders
                 .post(STUDENT_API)
@@ -140,6 +141,54 @@ public class StudentControllerTest {
 
 
     }
+
+    @Test
+    @DisplayName("Should return not found when the student doesn't exists")
+    public void studentNotFoundTest() throws Exception {
+
+        BDDMockito.given(studentService.getByStudentId(anyInt())).willReturn(Optional.empty());
+
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .get(STUDENT_API.concat("/" + 1))
+                .accept(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isNotFound());
+    }
+
+
+
+    @Test
+    @DisplayName("Should delete the student")
+    public void deleteStudentTest() throws Exception {
+
+        BDDMockito.given(studentService.getByStudentId(anyInt())).willReturn(Optional.of(Student.builder().studentId(11).build()));
+
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .delete(STUDENT_API.concat("/" + 1))
+                .accept(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isNoContent());
+
+    }
+
+
+    @Test
+    @DisplayName("Should return resource not found when no student is found to delete.")
+    public void deleteNonexistentStudentTest() throws Exception {
+
+        BDDMockito.given(studentService.getByStudentId(anyInt())).willReturn(Optional.empty());
+
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .delete(STUDENT_API.concat("/" + 1))
+                .accept(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isNotFound());
+
+    }
+
 
     private StudentDTO createNewStudent() {
         return StudentDTO.builder().studentName("Ana Neri").dateOfRegistration("10/10/2021").registration("001").build();
