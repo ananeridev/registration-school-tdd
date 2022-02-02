@@ -9,6 +9,9 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+
+import java.util.Optional;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 
@@ -28,13 +31,14 @@ public class StudentRepositoryTest {
     public void returnTrueWhenRegistrationExists() {
 
         String registration = "123";
-        Student student = Student.builder().studentName("Ana Neri").dateOfRegistration("10/10/2021").registration(registration).build();
+        Student student = createNewStudent(registration);
         entityManager.persist(student);
 
         boolean exists = repository.existsByRegistration(registration);
 
         assertThat(exists).isTrue();
     }
+
 
 
     @Test
@@ -46,6 +50,23 @@ public class StudentRepositoryTest {
         boolean exists = repository.existsByRegistration(registration);
 
         assertThat(exists).isFalse();
+    }
+
+    @Test
+    @DisplayName("Should get an student by id")
+    public void findByIdTest() {
+
+       Student student =  createNewStudent("323");
+       entityManager.persist(student);
+
+        Optional<Student> foundStudent = repository.findById(student.getStudentId());
+
+        assertThat(foundStudent.isPresent()).isTrue();
+    }
+
+
+    private Student createNewStudent(String registration) {
+        return Student.builder().studentName("Ana Neri").dateOfRegistration("10/10/2021").registration(registration).build();
     }
 
 }

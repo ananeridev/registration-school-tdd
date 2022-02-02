@@ -27,16 +27,24 @@ public class StudentServiceImpl  implements StudentService {
 
     @Override
     public Optional<Student> getByStudentId(Integer studentId) {
-        return Optional.empty();
+        return this.repository.findById(studentId);
     }
 
     @Override
     public void delete(Student student) {
 
+        if (student == null || student.getStudentId() == null) {
+            throw new IllegalArgumentException("StudentId cant not be null");
+        }
+        this.repository.delete(student);
     }
 
     @Override
     public Student update(Student student) {
-        return null;
+        if (student == null || student.getStudentId() == null) {
+            throw new IllegalArgumentException("StudentId cant not be null");
+        }
+       return this.repository.save(student);
     }
+
 }

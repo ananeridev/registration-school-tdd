@@ -15,7 +15,10 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.util.Optional;
+
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
@@ -77,5 +80,91 @@ public class StudentServiceTest {
 
     }
 
+    @Test
+    @DisplayName("Should get an student by studentId")
+    public void getByStudentIdTest() {
+        Integer studentId = 11;
+        Student student = createValidStudent();
+        student.setStudentId(studentId);
+        Mockito.when(repository.findById(studentId)).thenReturn(Optional.of(student));
 
+
+        Optional<Student> foundStudent = studentService.getByStudentId(studentId);
+
+        assertThat(foundStudent.isPresent()).isTrue();
+        assertThat(foundStudent.get().getStudentId()).isEqualTo(studentId);
+        assertThat(foundStudent.get().getStudentName()).isEqualTo(student.getStudentName());
+        assertThat(foundStudent.get().getDateOfRegistration()).isEqualTo(student.getDateOfRegistration());
+        assertThat(foundStudent.get().getRegistration()).isEqualTo(student.getRegistration());
+
+    }
+
+
+    @Test
+    @DisplayName("Should return empty when get an student by studentId when doesn't exists.")
+    public void studentNotFoundByIdTest() {
+        Integer studentId = 11;
+
+        Mockito.when(repository.findById(studentId)).thenReturn(Optional.empty());
+
+
+        Optional<Student> student = studentService.getByStudentId(studentId);
+
+        assertThat(student.isPresent()).isFalse();
+
+    }
+
+    @Test
+    @DisplayName("Should delete an student")
+    public void deleteStudentTest() {
+        Student student = Student.builder().studentId(11).build();
+
+       assertDoesNotThrow(() -> studentService.delete(student));
+
+        Mockito.verify(repository, Mockito.times(1)).delete(student);
+    }
+
+
+    @Test
+    @DisplayName("Should throw error when try to delete an student no existent")
+    public void deleteInvalidStudentTest() {
+        Student student = new Student();
+
+        assertThrows(IllegalArgumentException.class, () -> studentService.delete(student) );
+
+        Mockito.verify(repository, Mockito.never()).delete(student);
+    }
+
+
+    @Test
+    @DisplayName("Should throw error when try to update an student no existent")
+    public void updateInvalidStudentTest() {
+        Student student = new Student();
+
+        assertThrows(IllegalArgumentException.class, () -> studentService.update(student) );
+
+        Mockito.verify(repository, Mockito.never()).save(student);
+    }
+
+    @Test
+    @DisplayName("Should update an student")
+    public void updateStudentTest() {
+
+        Integer studentId = 11;
+        Student updatingStudent = Student.builder().studentId(studentId).build();
+
+        Student updatedStudent = createValidStudent();
+        updatedStudent.setStudentId(studentId);
+
+        Mockito.when(repository.save(updatingStudent)).thenReturn(updatedStudent);
+
+        Student student =  studentService.update(updatingStudent);
+
+       assertThat(student.getStudentId()).isEqualTo(updatedStudent.getStudentId());
+       assertThat(student.getStudentName()).isEqualTo(updatedStudent.getStudentName());
+       assertThat(student.getDateOfRegistration()).isEqualTo(updatedStudent.getDateOfRegistration());
+       assertThat(student.getRegistration()).isEqualTo(updatedStudent.getRegistration());
+
+
+    }
 }
