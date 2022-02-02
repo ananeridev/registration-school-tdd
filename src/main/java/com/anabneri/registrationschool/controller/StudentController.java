@@ -37,7 +37,7 @@ public class StudentController {
     }
 
 
-    @GetMapping("{id}")
+    @GetMapping("{studentId}")
     @ResponseStatus(HttpStatus.OK)
     public StudentDTO get( @PathVariable Integer studentId ) {
 

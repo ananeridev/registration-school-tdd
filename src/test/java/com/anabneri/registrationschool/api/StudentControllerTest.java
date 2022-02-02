@@ -26,6 +26,7 @@ import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Optional;
 
 import static org.hamcrest.Matchers.hasSize;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 
 @ExtendWith(SpringExtension.class)
@@ -63,11 +64,11 @@ public class StudentControllerTest {
 
         mockMvc
                 .perform(request)
-                .andExpect(MockMvcResultMatchers.status().isCreated())
-                .andExpect(MockMvcResultMatchers.jsonPath("studentId").value(101))
-                .andExpect(MockMvcResultMatchers.jsonPath("studentName").value(studentDTOBuilder.getStudentName()))
-                .andExpect(MockMvcResultMatchers.jsonPath("dateOfRegistration").value(studentDTOBuilder.getDateOfRegistration()))
-                .andExpect(MockMvcResultMatchers.jsonPath("registration").value(studentDTOBuilder.getRegistration()));
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("studentId").value(101))
+                .andExpect(jsonPath("studentName").value(studentDTOBuilder.getStudentName()))
+                .andExpect(jsonPath("dateOfRegistration").value(studentDTOBuilder.getDateOfRegistration()))
+                .andExpect(jsonPath("registration").value(studentDTOBuilder.getRegistration()));
 
 
     }
@@ -86,8 +87,8 @@ public class StudentControllerTest {
 
 
         mockMvc.perform(request)
-                .andExpect(MockMvcResultMatchers.status().isBadRequest())
-                .andExpect(MockMvcResultMatchers.jsonPath("errors", hasSize(3)));
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("errors", hasSize(3)));
 
     }
 
@@ -107,9 +108,9 @@ public class StudentControllerTest {
                 .content(json);
 
         mockMvc.perform(request)
-                .andExpect(MockMvcResultMatchers.status().isBadRequest())
-                .andExpect(MockMvcResultMatchers.jsonPath("errors", hasSize(1)))
-                .andExpect(MockMvcResultMatchers.jsonPath("errors[0]").value("Registration already created!"));
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("errors", hasSize(1)))
+                .andExpect(jsonPath("errors[0]").value("Registration already created!"));
     }
 
     @Test
@@ -131,11 +132,11 @@ public class StudentControllerTest {
                 .accept(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(requestBuilder)
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("studentId").value(studentId))
-                .andExpect(MockMvcResultMatchers.jsonPath("studentName").value(createNewStudent().getStudentName()))
-                .andExpect(MockMvcResultMatchers.jsonPath("dateOfRegistration").value(createNewStudent().getDateOfRegistration()))
-                .andExpect(MockMvcResultMatchers.jsonPath("registration").value(createNewStudent().getRegistration()));
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("studentId").value(studentId))
+                .andExpect(jsonPath("studentName").value(createNewStudent().getStudentName()))
+                .andExpect(jsonPath("dateOfRegistration").value(createNewStudent().getDateOfRegistration()))
+                .andExpect(jsonPath("registration").value(createNewStudent().getRegistration()));
 
 
     }
