@@ -11,4 +11,6 @@ public interface StudentService {
     Optional<Student> getByStudentId(Integer studentId);
 
     void delete(Student student);
+
+    Student update(Student student);
 }

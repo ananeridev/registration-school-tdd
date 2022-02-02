@@ -34,4 +34,9 @@ public class StudentServiceImpl  implements StudentService {
     public void delete(Student student) {
 
     }
+
+    @Override
+    public Student update(Student student) {
+        return null;
+    }
 }

@@ -57,6 +57,18 @@ public class StudentController {
     }
 
 
+    @PutMapping("{studentId}")
+    public StudentDTO update(@PathVariable Integer studentId, StudentDTO studentDTO) {
+       return studentService.getByStudentId(studentId).map(student -> {
+            student.setStudentName(studentDTO.getStudentName());
+            student.setDateOfRegistration(studentDTO.getDateOfRegistration());
+            student =  studentService.update(student);
+            return modelMapper.map(student, StudentDTO.class);
+        }).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+
+    }
+
+
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)

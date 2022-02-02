@@ -190,6 +190,56 @@ public class StudentControllerTest {
     }
 
 
+    @Test
+    @DisplayName("Should update an student info")
+    public void updateStudentTest() throws Exception {
+
+        Integer studentId = 11;
+        String json = new ObjectMapper().writeValueAsString(createNewStudent());
+
+
+        Student updatingStudent = Student.builder().studentId(11).studentName("Erick Wendel").dateOfRegistration("10/01/2022").registration("323").build();
+        BDDMockito.given(studentService.getByStudentId(anyInt()))
+                .willReturn(Optional.of(updatingStudent));
+
+        Student updatedStudent = Student.builder().studentId(studentId).studentName("Ana Neri").dateOfRegistration("10/10/2021").registration("323").build();
+        BDDMockito.given(studentService.update(updatingStudent)).willReturn(updatedStudent);
+
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .put(STUDENT_API.concat("/" + 1))
+                .contentType(json)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("studentId").value(studentId))
+                .andExpect(jsonPath("studentName").value(createNewStudent().getStudentName()))
+                .andExpect(jsonPath("dateOfRegistration").value(createNewStudent().getDateOfRegistration()))
+                .andExpect(jsonPath("registration").value("323"));
+
+
+    }
+
+    @Test
+    @DisplayName("Should return 404 when try to update an student no existent")
+    public void updateNoExistentStudentTest() throws Exception {
+
+        String json = new ObjectMapper().writeValueAsString(createNewStudent());
+        BDDMockito.given(studentService.getByStudentId(anyInt()))
+                .willReturn(Optional.empty());
+
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .put(STUDENT_API.concat("/" + 1))
+                .contentType(json)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isNotFound());
+    }
+
+
     private StudentDTO createNewStudent() {
         return StudentDTO.builder().studentName("Ana Neri").dateOfRegistration("10/10/2021").registration("001").build();
     }
