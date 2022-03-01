@@ -4,6 +4,7 @@ import com.anabneri.registrationschool.exception.BusinessException;
 import com.anabneri.registrationschool.model.StudentDTO;
 import com.anabneri.registrationschool.model.entity.Student;
 import com.anabneri.registrationschool.service.StudentService;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -245,7 +246,7 @@ public class StudentControllerTest {
 
     @Test
     @DisplayName("Should filter students")
-    public void findStudentsTest() {
+    public void findStudentsTest() throws Exception {
 
         Integer studentId = 11;
 
@@ -263,8 +264,21 @@ public class StudentControllerTest {
         // pesquisa numa api rest
         // ? significa que irei passar parametros /api/students?
         // &  - serve pra separar os parametros
-        String queryString = String.format("?studentName=%s&dateOfRegistration=%s&page=0&size=100");
+        String queryString = String.format("?studentName=%s&dateOfRegistration=%s&page=0&size=100",
+                student.getStudentName(), student.getDateOfRegistration());
 
+
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
+                .get(STUDENT_API.concat(queryString))
+                .accept(MediaType.APPLICATION_JSON);
+
+        mockMvc
+                .perform(requestBuilder)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("content", Matchers.hasSize(1)))
+                .andExpect(jsonPath("totalElements").value(1))
+                .andExpect(jsonPath("pageable.pageSize").value(100))
+                .andExpect(jsonPath("pageable.pageNumber").value(0));
     }
 
     private StudentDTO createNewStudent() {
