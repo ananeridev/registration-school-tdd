@@ -65,6 +65,17 @@ public class StudentRepositoryTest {
     }
 
 
+    @Test
+    @DisplayName("Should save an student")
+    public void saveStudentTest() {
+
+        Student student = createNewStudent("123");
+        Student savedStudent = repository.save(student);
+
+        assertThat(savedStudent.getStudentId()).isNotNull();
+
+    }
+
     private Student createNewStudent(String registration) {
         return Student.builder().studentName("Ana Neri").dateOfRegistration("10/10/2021").registration(registration).build();
     }
