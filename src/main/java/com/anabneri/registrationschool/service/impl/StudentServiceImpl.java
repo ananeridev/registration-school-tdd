@@ -4,6 +4,8 @@ import com.anabneri.registrationschool.exception.BusinessException;
 import com.anabneri.registrationschool.model.entity.Student;
 import com.anabneri.registrationschool.repository.StudentRepository;
 import com.anabneri.registrationschool.service.StudentService;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -51,7 +53,16 @@ public class StudentServiceImpl  implements StudentService {
 
     @Override
     public Page<Student> find(Student filter, Pageable pageRequest) {
-        return null;
+        Example<Student> example = Example.of(filter,
+                ExampleMatcher
+                        .matching()
+                        .withIgnoreCase()
+                        .withIgnoreNullValues()
+                        // bater nas propriedades de string tendo de bater com o inicio do parametro
+                        // basta ter um pedaco da palavra que vai trazer
+                        .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING));
+
+        return repository.findAll(example, pageRequest);
     }
 
 }
