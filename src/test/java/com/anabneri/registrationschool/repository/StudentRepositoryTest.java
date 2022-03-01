@@ -76,6 +76,23 @@ public class StudentRepositoryTest {
 
     }
 
+    @Test
+    @DisplayName("Should delete and student from the base")
+    public void deleteStudentTest() {
+
+        Student student = createNewStudent("123");
+        entityManager.persist(student);
+
+        Student foundStudent = entityManager.find( Student.class, student.getStudentId());
+
+        repository.delete(foundStudent);
+
+        Student deleteStudent = entityManager.find( Student.class, student.getStudentId());
+        assertThat(deleteStudent).isNull();
+
+    }
+
+
     private Student createNewStudent(String registration) {
         return Student.builder().studentName("Ana Neri").dateOfRegistration("10/10/2021").registration(registration).build();
     }

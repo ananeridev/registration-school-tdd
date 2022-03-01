@@ -14,6 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -23,6 +26,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.util.Arrays;
 import java.util.Optional;
 
 import static org.hamcrest.Matchers.hasSize;
@@ -239,6 +243,29 @@ public class StudentControllerTest {
                 .andExpect(status().isNotFound());
     }
 
+    @Test
+    @DisplayName("Should filter students")
+    public void findStudentsTest() {
+
+        Integer studentId = 11;
+
+        Student student = Student.builder()
+                .studentId(studentId)
+                .studentName(createNewStudent().getStudentName())
+                .dateOfRegistration(createNewStudent().getDateOfRegistration())
+                .registration(createNewStudent().getRegistration()).build();
+
+        // nao interessa o teste o q importa é o retorno
+        BDDMockito.given(studentService.find(Mockito.any(Student.class), Mockito.any(Pageable.class)) )
+                // deve retornar uma paginacao e nao uma lista
+                .willReturn(new PageImpl<Student>(Arrays.asList(student), PageRequest.of(0,100), 1));
+
+        // pesquisa numa api rest
+        // ? significa que irei passar parametros /api/students?
+        // &  - serve pra separar os parametros
+        String queryString = String.format("?studentName=%s&dateOfRegistration=%s&page=0&size=100");
+
+    }
 
     private StudentDTO createNewStudent() {
         return StudentDTO.builder().studentName("Ana Neri").dateOfRegistration("10/10/2021").registration("001").build();

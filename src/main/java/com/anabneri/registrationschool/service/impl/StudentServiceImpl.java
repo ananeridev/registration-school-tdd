@@ -4,6 +4,8 @@ import com.anabneri.registrationschool.exception.BusinessException;
 import com.anabneri.registrationschool.model.entity.Student;
 import com.anabneri.registrationschool.repository.StudentRepository;
 import com.anabneri.registrationschool.service.StudentService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -45,6 +47,11 @@ public class StudentServiceImpl  implements StudentService {
             throw new IllegalArgumentException("StudentId cant not be null");
         }
        return this.repository.save(student);
+    }
+
+    @Override
+    public Page<Student> find(Student filter, Pageable pageRequest) {
+        return null;
     }
 
 }
