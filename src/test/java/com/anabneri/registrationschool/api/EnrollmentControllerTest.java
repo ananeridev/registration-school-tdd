@@ -21,8 +21,11 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.testcontainers.shaded.org.hamcrest.Matchers;
+
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 
@@ -71,6 +74,28 @@ public class EnrollmentControllerTest {
         mockMvc.perform(requestBuilder)
                 .andExpect(status().isCreated())
                 .andExpect(content().string("11"));
+    }
+
+
+    @Test
+    @DisplayName("Should return error when try to enrollment a nonexistent student")
+    public void invalidRegistrationStudentCreateEnrollmentTest() throws Exception {
+
+        EnrollmentDTO dto = EnrollmentDTO.builder().studentRegistration("123").course("Database").build();
+        String json = new ObjectMapper().writeValueAsString(dto);
+
+
+        BDDMockito.given(studentService.getStudentByRegistration("123")).willReturn(Optional.empty());
+
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post(ENROLLMENT_API)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json);
+
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isBadRequest())
+                .andExpect((ResultMatcher) jsonPath("errors", Matchers.hasSize(1)))
+                .andExpect(jsonPath("errors[0]").value("Student not found for registration passed"));
     }
 
 }

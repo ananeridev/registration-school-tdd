@@ -8,6 +8,7 @@ import com.anabneri.registrationschool.service.StudentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 
@@ -23,7 +24,9 @@ public class EnrollmentController {
     @ResponseStatus(HttpStatus.CREATED)
     public Long create(@RequestBody EnrollmentDTO dto) {
 
-        Student student = studentService.getStudentByRegistration(dto.getStudentRegistration()).get();
+        Student student = studentService.getStudentByRegistration(dto.getStudentRegistration())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Student not found for registration passed"));
+
         Enrollment enrollmentEntity = Enrollment.builder()
                                         .course(dto.getCourse())
                                         .student(student)
