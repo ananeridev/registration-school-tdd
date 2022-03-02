@@ -1,5 +1,6 @@
 package com.anabneri.registrationschool.api;
 
+import com.anabneri.registrationschool.controller.StudentController;
 import com.anabneri.registrationschool.exception.BusinessException;
 import com.anabneri.registrationschool.model.StudentDTO;
 import com.anabneri.registrationschool.model.entity.Student;
@@ -9,7 +10,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.BDDMockito;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -24,7 +24,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.Arrays;
@@ -37,7 +36,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
-@WebMvcTest
+@WebMvcTest(controllers = {StudentController.class})
 @AutoConfigureMockMvc
 public class StudentControllerTest {
 
@@ -74,7 +73,7 @@ public class StudentControllerTest {
                 .andExpect(jsonPath("studentId").value(101))
                 .andExpect(jsonPath("studentName").value(studentDTOBuilder.getStudentName()))
                 .andExpect(jsonPath("dateOfRegistration").value(studentDTOBuilder.getDateOfRegistration()))
-                .andExpect(jsonPath("registration").value(studentDTOBuilder.getRegistration()));
+                .andExpect(jsonPath("registration").value(studentDTOBuilder.getStudentRegistration()));
 
 
     }
@@ -129,7 +128,7 @@ public class StudentControllerTest {
                 .studentId(studentId)
                 .studentName(createNewStudent().getStudentName())
                 .dateOfRegistration(createNewStudent().getDateOfRegistration())
-                .registration(createNewStudent().getRegistration()).build();
+                .registration(createNewStudent().getStudentRegistration()).build();
 
         BDDMockito.given(studentService.getByStudentId(studentId)).willReturn(Optional.of(student));
 
@@ -142,7 +141,7 @@ public class StudentControllerTest {
                 .andExpect(jsonPath("studentId").value(studentId))
                 .andExpect(jsonPath("studentName").value(createNewStudent().getStudentName()))
                 .andExpect(jsonPath("dateOfRegistration").value(createNewStudent().getDateOfRegistration()))
-                .andExpect(jsonPath("registration").value(createNewStudent().getRegistration()));
+                .andExpect(jsonPath("registration").value(createNewStudent().getStudentRegistration()));
 
 
     }
@@ -254,7 +253,7 @@ public class StudentControllerTest {
                 .studentId(studentId)
                 .studentName(createNewStudent().getStudentName())
                 .dateOfRegistration(createNewStudent().getDateOfRegistration())
-                .registration(createNewStudent().getRegistration()).build();
+                .registration(createNewStudent().getStudentRegistration()).build();
 
         // nao interessa o teste o q importa é o retorno
         BDDMockito.given(studentService.find(Mockito.any(Student.class), Mockito.any(Pageable.class)) )
@@ -282,7 +281,7 @@ public class StudentControllerTest {
     }
 
     private StudentDTO createNewStudent() {
-        return StudentDTO.builder().studentName("Ana Neri").dateOfRegistration("10/10/2021").registration("001").build();
+        return StudentDTO.builder().studentName("Ana Neri").dateOfRegistration("10/10/2021").studentRegistration("001").build();
     }
 
 

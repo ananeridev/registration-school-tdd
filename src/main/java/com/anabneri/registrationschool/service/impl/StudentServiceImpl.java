@@ -65,4 +65,9 @@ public class StudentServiceImpl  implements StudentService {
         return repository.findAll(example, pageRequest);
     }
 
+    @Override
+    public Optional<Student> getStudentByRegistration(String registration) {
+        return null;
+    }
+
 }

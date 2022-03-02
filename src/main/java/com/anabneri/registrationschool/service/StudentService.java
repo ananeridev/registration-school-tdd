@@ -18,4 +18,6 @@ public interface StudentService {
     Student update(Student student);
 
     Page<Student> find(Student filter, Pageable pageRequest);
+
+    Optional<Student> getStudentByRegistration(String registration);
 }
