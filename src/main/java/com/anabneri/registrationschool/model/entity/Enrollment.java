@@ -13,7 +13,7 @@ import java.time.LocalDate;
 @Builder
 public class Enrollment {
 
-    private Integer id;
+    private long id;
     private String course;
     private Student student;
     private LocalDate enrollmentDate;
