@@ -70,7 +70,7 @@ public class EnrollmentControllerTest {
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("studentId").value(11));
+                .andExpect(content().string("11"));
     }
 
 }
