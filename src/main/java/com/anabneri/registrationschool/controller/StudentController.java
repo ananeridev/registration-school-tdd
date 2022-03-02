@@ -87,20 +87,4 @@ public class StudentController {
     }
 
 
-
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ApiErrors handleValidateException(MethodArgumentNotValidException e) {
-        BindingResult bindingResult = e.getBindingResult();
-
-        return new ApiErrors(bindingResult);
-    }
-
-
-    @ExceptionHandler(BusinessException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ApiErrors handleBusinessException(BusinessException e) {
-
-        return new ApiErrors(e);
-    }
 }
