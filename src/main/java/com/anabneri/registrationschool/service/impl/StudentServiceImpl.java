@@ -67,7 +67,7 @@ public class StudentServiceImpl  implements StudentService {
 
     @Override
     public Optional<Student> getStudentByRegistration(String registration) {
-        return null;
+        return repository.findByRegistration(registration);
     }
 
 }

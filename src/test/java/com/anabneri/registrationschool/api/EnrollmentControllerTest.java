@@ -1,6 +1,7 @@
 package com.anabneri.registrationschool.api;
 
 import com.anabneri.registrationschool.controller.EnrollmentController;
+import com.anabneri.registrationschool.exception.BusinessException;
 import com.anabneri.registrationschool.model.EnrollmentDTO;
 import com.anabneri.registrationschool.model.entity.Enrollment;
 import com.anabneri.registrationschool.model.entity.Student;
@@ -58,7 +59,6 @@ public class EnrollmentControllerTest {
         String json = new ObjectMapper().writeValueAsString(dto);
 
         Student student = Student.builder().studentId(11).studentName("Ana Neri").registration("123").build();
-
         BDDMockito.given(studentService.getStudentByRegistration("123"))
                 .willReturn(Optional.of(student));
 
@@ -86,6 +86,34 @@ public class EnrollmentControllerTest {
 
 
         BDDMockito.given(studentService.getStudentByRegistration("123")).willReturn(Optional.empty());
+
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post(ENROLLMENT_API)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json);
+
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isBadRequest());
+//                .andExpect(jsonPath("errors", Matchers.hasSize(1)) )
+//                .andExpect(jsonPath("errors[0]").value("Student not found for registration passed"));
+    }
+
+
+    @Test
+    @DisplayName("Should return error when try to enrollment a student already register on a course")
+    public void enrollmentStudentErrorOnCreateEnrollmentTest() throws Exception {
+
+        EnrollmentDTO dto = EnrollmentDTO.builder().studentRegistration("123").course("Database").build();
+        String json = new ObjectMapper().writeValueAsString(dto);
+
+
+        Student student = Student.builder().studentId(11).studentName("Ana Neri").registration("123").build();
+        BDDMockito.given(studentService.getStudentByRegistration("123"))
+                .willReturn(Optional.of(student));
+
+        // procura na base se ja tem algum enrollment pra esse student
+        BDDMockito.given(enrollmentService.save(Mockito.any(Enrollment.class))).willThrow(new BusinessException("Student already enrolled"));
+
 
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post(ENROLLMENT_API)
                 .accept(MediaType.APPLICATION_JSON)

@@ -201,4 +201,21 @@ public class StudentServiceTest {
         assertThat(result.getPageable().getPageNumber()).isEqualTo(0);
         assertThat(result.getPageable().getPageSize()).isEqualTo(10);
     }
+
+    @Test
+    @DisplayName("Should get a student by registration")
+    public void getStudentByRegistration() {
+        String registration = "1230";
+
+        Mockito.when(repository.findByRegistration(registration)).thenReturn(Optional.of(Student.builder().studentId(11).registration(registration).build()) );
+
+
+        Optional<Student> student =  studentService.getStudentByRegistration(registration);
+
+        assertThat(student.isPresent()).isTrue();
+        assertThat(student.get().getStudentId()).isEqualTo(11);
+        assertThat(student.get().getRegistration()).isEqualTo(registration);
+
+        Mockito.verify(repository, Mockito.times(1)).findByRegistration(registration);
+    }
 }
