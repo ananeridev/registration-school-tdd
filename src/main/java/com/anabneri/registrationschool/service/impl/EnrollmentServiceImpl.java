@@ -1,5 +1,6 @@
 package com.anabneri.registrationschool.service.impl;
 
+import com.anabneri.registrationschool.exception.BusinessException;
 import com.anabneri.registrationschool.model.entity.Enrollment;
 import com.anabneri.registrationschool.repository.EnrollmentRepository;
 import com.anabneri.registrationschool.service.EnrollmentService;
@@ -14,6 +15,9 @@ public class EnrollmentServiceImpl implements EnrollmentService {
 
     @Override
     public Enrollment save(Enrollment enrollment) {
+        if (repository.existsByStudentAndNotRegistrated(enrollment.getStudent())) {
+            throw new BusinessException("Student already enrolled");
+        }
         return repository.save(enrollment);
     }
 }

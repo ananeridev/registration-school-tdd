@@ -17,5 +17,6 @@ public class Enrollment {
     private String course;
     private Student student;
     private LocalDate enrollmentDate;
+    private Boolean registered;
 
 }
