@@ -39,12 +39,7 @@ public class EnrollmentServiceTest {
     @DisplayName("Should save an enrollment")
     public void saveEnrollmentTest() {
 
-        Student student = Student.builder()
-                .studentId(11)
-//                .studentName("Ana")
-//                .dateOfRegistration("21/12/2021")
-//                .registration("123")
-                .build();
+        Student student = Student.builder().studentId(11).build();
 
         Enrollment savingEnrollment = Enrollment.builder()
                 .student(student)
@@ -60,13 +55,14 @@ public class EnrollmentServiceTest {
                 .student(student)
                 .build();
 
+        Mockito.when(repository.existsByStudentAndNotRegistrated(student)).thenReturn(false);
         Mockito.when(repository.save(savingEnrollment)).thenReturn(savedEnrollment);
 
         Enrollment enrollment = enrollmentService.save(savingEnrollment);
 
         assertThat(enrollment.getId()).isEqualTo(savedEnrollment.getId());
         assertThat(enrollment.getCourse()).isEqualTo(savedEnrollment.getCourse());
-//        assertThat(enrollment.getStudent()).isEqualTo(savedEnrollment.getStudent().getStudentId());
+        assertThat(enrollment.getStudent()).isEqualTo(savedEnrollment.getStudent());
         assertThat(enrollment.getEnrollmentDate()).isEqualTo(savedEnrollment.getEnrollmentDate());
     }
 
